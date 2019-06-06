@@ -1,5 +1,6 @@
 package com.rush.wndrsntch.data.network;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ public class APIClient implements IAPIClientHelper
 {
     private static final String TAG = "APIClient";
 
+    //TODO: fetch from server.
     private String json = "{\n" +
             "  \"stages\": [\n" +
             "    {\n" +
@@ -31,12 +33,12 @@ public class APIClient implements IAPIClientHelper
             "        {\n" +
             "          \"choiceId\": 0,\n" +
             "          \"stageId\": 3,\n" +
-            "          \"choice\": \"Take the less travelled.\"\n" +
+            "          \"choice\": \"Less travelled.\"\n" +
             "        },\n" +
             "        {\n" +
             "          \"choiceId\": 1,\n" +
             "          \"stageId\": 6,\n" +
-            "          \"choice\": \"Take the more travelled.\"\n" +
+            "          \"choice\": \"More travelled.\"\n" +
             "        }\n" +
             "      ]\n" +
             "    },\n" +
@@ -73,6 +75,7 @@ public class APIClient implements IAPIClientHelper
             "  ]\n" +
             "}";
 
+    @Nullable
     @Override
     public Stage getStageById( int stageId )
     {

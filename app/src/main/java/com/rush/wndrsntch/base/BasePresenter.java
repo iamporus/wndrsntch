@@ -1,12 +1,18 @@
 package com.rush.wndrsntch.base;
 
+import com.rush.wndrsntch.data.network.IAPIClientHelper;
+import com.rush.wndrsntch.data.preference.IPreferenceHelper;
+
 public class BasePresenter< V extends IView > implements IPresenter< V >
 {
+    private final IAPIClientHelper mIApiClientHelper;
+    private final IPreferenceHelper mIPreferenceHelper;
     private V mView;
 
-    public BasePresenter()
+    public BasePresenter( IAPIClientHelper iapiClientHelper, IPreferenceHelper iPreferenceHelper )
     {
-        //Inject global dependencies through this constructor
+        mIApiClientHelper = iapiClientHelper;
+        mIPreferenceHelper = iPreferenceHelper;
     }
 
     @Override
@@ -31,5 +37,15 @@ public class BasePresenter< V extends IView > implements IPresenter< V >
     public boolean isViewAttached()
     {
         return mView != null;
+    }
+
+    public IAPIClientHelper getIApiClientHelper()
+    {
+        return mIApiClientHelper;
+    }
+
+    public IPreferenceHelper getIPreferenceHelper()
+    {
+        return mIPreferenceHelper;
     }
 }

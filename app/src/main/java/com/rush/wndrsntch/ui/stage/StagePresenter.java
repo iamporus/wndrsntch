@@ -6,14 +6,21 @@ import android.util.Log;
 
 import com.rush.wndrsntch.base.BasePresenter;
 import com.rush.wndrsntch.data.network.APIClient;
+import com.rush.wndrsntch.data.network.IAPIClientHelper;
 import com.rush.wndrsntch.data.network.model.Choice;
 import com.rush.wndrsntch.data.network.model.Stage;
+import com.rush.wndrsntch.data.preference.IPreferenceHelper;
 import com.rush.wndrsntch.ui.MainActivity;
 
 public class StagePresenter< V extends IStageView > extends BasePresenter< V > implements
                                                                                IStagePresenter< V >
 {
     private static final String TAG = "StagePresenter";
+
+    StagePresenter( IAPIClientHelper iapiClientHelper, IPreferenceHelper iPreferenceHelper )
+    {
+        super( iapiClientHelper, iPreferenceHelper );
+    }
 
     @Override
     public void onChoiceSelected( Choice choice )
