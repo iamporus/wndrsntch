@@ -2,19 +2,24 @@ package com.rush.wndrsntch.ui.views;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.google.common.base.Preconditions;
+
 public class TypedTextView extends AppCompatTextView
 {
     public static final String TAG = "TypedTextView";
-    public static final long SENTENCE_DELAY_MILLIS = 1500;
-    public static final long CURSOR_BLINK_DELAY_MILLIS = 530;
-    private static final long TYPING_DELAY_MILLIS = 175;
+    private long mSentenceDelayMillis = 1500;
+    private long mCursorBlinkDelayMillis = 530;
+    private long mTypingDelayMillis = 175;
     private int mIndex;
     private CharSequence mText;
     private TypingUpdateListener mTypingUpdateListener;
+    private boolean mbShowCursor = false;
+    private boolean mbSplitSentences = false;
 
     public interface TypingUpdateListener
     {
@@ -39,27 +44,33 @@ public class TypedTextView extends AppCompatTextView
         {
             Log.d( TAG, "run: " + mText.subSequence( 0, mIndex ) );
             CharSequence charSequence = mText.subSequence( 0, mIndex );
-            if( mIndex < mText.length() )
+            if( mbShowCursor && mIndex < mText.length() )
             {
                 charSequence = charSequence + "|";
             }
             setText( charSequence );
-            mTypingUpdateListener.onTypingUpdate( mIndex );
+            if( mTypingUpdateListener != null )
+            {
+                mTypingUpdateListener.onTypingUpdate( mIndex );
+            }
 
             if( mIndex < mText.length() )
             {
-                mHandler.postDelayed( mTypeWriter, TYPING_DELAY_MILLIS );
+                mHandler.postDelayed( mTypeWriter, mTypingDelayMillis );
                 if( mIndex != 0 && mText.charAt( mIndex - 1 ) == '.' )
                 {
                     mHandler.removeCallbacks( mTypeWriter );
-                    mHandler.postDelayed( mTypeWriter, SENTENCE_DELAY_MILLIS );
+                    mHandler.postDelayed( mTypeWriter, mSentenceDelayMillis );
                 }
                 mIndex++;
             }
             else
             {
                 mHandler.removeCallbacks( mTypeWriter );
-                mHandler.postDelayed( mCursorProxyRunnable, CURSOR_BLINK_DELAY_MILLIS );
+                if( mbShowCursor )
+                {
+                    mHandler.postDelayed( mCursorProxyRunnable, mCursorBlinkDelayMillis );
+                }
             }
         }
     };
@@ -99,12 +110,36 @@ public class TypedTextView extends AppCompatTextView
             }
             mText = charSequence;
             setText( charSequence );
-            mHandler.postDelayed( mCursorProxyRunnable, CURSOR_BLINK_DELAY_MILLIS );
+            mHandler.postDelayed( mCursorProxyRunnable, mCursorBlinkDelayMillis );
         }
     };
 
-    public void setTypedText( String text, TypingUpdateListener typingUpdateListener )
+    /**
+     * Set text to be typed by the TypeWriter
+     *
+     * @param text                 String text to be typed
+     * @param typingUpdateListener {@link TypingUpdateListener} Listener to listen to receive update on typed word
+     */
+    public void setTypedText( final @NonNull String text, final TypingUpdateListener typingUpdateListener )
     {
+        Preconditions.checkNotNull( text );
+
+        mText = mbSplitSentences ? splitSentences( text ) : text;
+
+        mIndex = 0;
+        setText( "" );
+        mHandler.removeCallbacks( mTypeWriter );
+        if( mbShowCursor )
+        {
+            mHandler.removeCallbacks( mCursorProxyRunnable );
+        }
+        mHandler.postDelayed( mTypeWriter, mTypingDelayMillis );
+        mTypingUpdateListener = typingUpdateListener;
+    }
+
+    private String splitSentences( @NonNull String text )
+    {
+        Preconditions.checkNotNull( text );
         int index = text.indexOf( '.' );
         int lastIndex = text.lastIndexOf( '.' );
         if( index != lastIndex )
@@ -113,20 +148,65 @@ public class TypedTextView extends AppCompatTextView
             //introduce new lines for every full stop except the last one terminating string.
             do
             {
-                mText = text.replaceFirst( "\\.", ".\n" );
+                text = text.replaceFirst( "\\. ", ".\n" );
+
                 index = text.indexOf( '.', index + 1 );
+                lastIndex = text.lastIndexOf( '.' );
+
             } while( index != -1 && index != lastIndex );
         }
-        else
-        {
-            //single sentence found.
-            mText = text;
-        }
-        mIndex = 0;
-        setText( "" );
-        mHandler.removeCallbacks( mTypeWriter );
-        mHandler.removeCallbacks( mCursorProxyRunnable );
-        mHandler.postDelayed( mTypeWriter, TYPING_DELAY_MILLIS );
-        mTypingUpdateListener = typingUpdateListener;
+
+        return text;
+    }
+
+    /**
+     * Show cursor while typing
+     *
+     * @param bShowCursor boolean display blinking cursor while typing.
+     */
+    public void showCursor( final boolean bShowCursor )
+    {
+        this.mbShowCursor = bShowCursor;
+    }
+
+    /**
+     * Split sentences on a new line.
+     *
+     * @param bSplitSentences boolean Type Writer splits sentences onto new line based on fullstops
+     *                        found in the passed string
+     */
+    public void splitSentences( final boolean bSplitSentences )
+    {
+        this.mbSplitSentences = bSplitSentences;
+    }
+
+    /**
+     * Set duration to wait after every sentence
+     *
+     * @param sentenceDelayMillis long duration in milliseconds to wait after every sentence
+     */
+    public void setSentenceDelay( final long sentenceDelayMillis )
+    {
+        mSentenceDelayMillis = sentenceDelayMillis;
+    }
+
+    /**
+     * Set duration to wait after every cursor blink
+     *
+     * @param cursorBlinkDelayMillis long duration in milliseconds between every cursor blink
+     */
+    public void setCursorBlinkDelay( final long cursorBlinkDelayMillis )
+    {
+        mCursorBlinkDelayMillis = cursorBlinkDelayMillis;
+    }
+
+    /**
+     * Set duration to wait after every character typed
+     *
+     * @param typingDelayMillis long duration in milliseconds to wait after every character typed
+     */
+    public void setTypingDelay( final long typingDelayMillis )
+    {
+        mTypingDelayMillis = typingDelayMillis;
     }
 }
