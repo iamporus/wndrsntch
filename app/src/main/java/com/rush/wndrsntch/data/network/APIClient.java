@@ -18,7 +18,7 @@ public class APIClient implements IAPIClientHelper
             "  \"stages\": [\n" +
             "    {\n" +
             "      \"id\": 0,\n" +
-            "      \"value\": \"You are in a jungle.\",\n" +
+            "      \"value\": \"You are in a jungle. Tap here.\",\n" +
             "      \"nextStageId\": 1\n" +
             "    },\n" +
             "    {\n" +
@@ -44,12 +44,12 @@ public class APIClient implements IAPIClientHelper
             "    },\n" +
             "    {\n" +
             "      \"id\": 3,\n" +
-            "      \"value\": \"Look around. See there's a rare footprint on the ground.\",\n" +
+            "      \"value\": \"Look around. See, there's a rare footprint on the ground.\",\n" +
             "      \"nextStageId\": 4\n" +
             "    },\n" +
             "    {\n" +
             "      \"id\": 4,\n" +
-            "      \"value\": \"Here comes an animal from the bush. And you die.\",\n" +
+            "      \"value\": \"Here comes a tiger from the bush. He attacks on you. And you die.\",\n" +
             "      \"nextStageId\": 5\n" +
             "    },\n" +
             "    {\n" +
@@ -69,7 +69,7 @@ public class APIClient implements IAPIClientHelper
             "    },\n" +
             "    {\n" +
             "      \"id\": 8,\n" +
-            "      \"value\": \"You keep walking. You saw find the exit. You win.\",\n" +
+            "      \"value\": \"You keep walking. You saw the exit and you walk out of the jungle. You live to live another day.\",\n" +
             "      \"nextStageId\": 5\n" +
             "    }\n" +
             "  ]\n" +

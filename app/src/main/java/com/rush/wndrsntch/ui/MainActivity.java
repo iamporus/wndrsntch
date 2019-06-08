@@ -17,6 +17,8 @@ import com.rush.wndrsntch.data.network.APIClient;
 import com.rush.wndrsntch.data.network.model.Stage;
 import com.rush.wndrsntch.ui.stage.StageFragment;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class MainActivity extends BaseActivity
 {
 
@@ -27,6 +29,12 @@ public class MainActivity extends BaseActivity
     public static final String END_OF_LEVEL_ACTION = "com.rush.bandersnatch.actions.END_OF_LEVEL_ACTION";
     public static final String STAGE = "com.rush.bandersnatch.extras.STAGE";
     private BroadcastReceiver mBroadcastReceiver;
+
+    @Override
+    protected void attachBaseContext( Context newBase )
+    {
+        super.attachBaseContext( CalligraphyContextWrapper.wrap( newBase ) );
+    }
 
     @Override
     protected void onCreate( Bundle savedInstanceState )

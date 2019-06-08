@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.rush.wndrsntch.AppConstants;
 import com.rush.wndrsntch.R;
@@ -26,8 +25,8 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
 {
     private static final String TAG = "StageFragment";
     private TypedTextView mStageTextView;
-    private Button mLeftChoice;
-    private Button mRightChoice;
+    private TypedTextView mLeftChoice;
+    private TypedTextView mRightChoice;
     private StagePresenter< IStageView > mPresenter;
     private Stage mStage;
     private boolean mbTypingAnimationEnded;
@@ -66,10 +65,13 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
 
         mStageTextView = view.findViewById( R.id.textView );
         mStageTextView.splitSentences( true );
-        mStageTextView.showCursor( true );
+        mStageTextView.showCursor( false );
+        mStageTextView.emitSound( true, R.raw.typing );
 
         mLeftChoice = view.findViewById( R.id.button );
         mRightChoice = view.findViewById( R.id.button2 );
+        mRightChoice.emitSound( true, R.raw.typing );
+        mLeftChoice.emitSound( true, R.raw.typing );
         return view;
     }
 
@@ -90,13 +92,13 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         if( mStage.getChoices() != null && mStage.getChoices().size() > 0 )
         {
             //setup choices
-            mLeftChoice.setText( mStage.getChoices().get( 0 ).getChoice() );
-            mRightChoice.setText( mStage.getChoices().get( 1 ).getChoice() );
 
             mLeftChoice.setTag( mStage.getChoices().get( 0 ) );
             mRightChoice.setTag( mStage.getChoices().get( 1 ) );
+
             mLeftChoice.setOnClickListener( this );
             mRightChoice.setOnClickListener( this );
+
             bHasChoices = true;
             mStageTextView.setOnClickListener( null );
         }
@@ -108,36 +110,62 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
             mStageTextView.setOnClickListener( this );
         }
 
-        mStageTextView.setTypedText( mStage.getValue(), new TypedTextView.TypingUpdateListener()
+        TextAnimator.reveal( mStageTextView, 500 ).addListener( new AnimatorListenerAdapter()
         {
             @Override
-            public void onTypingUpdate( int index )
+            public void onAnimationEnd( Animator animation )
             {
-                if( index == mStage.getValue().length() )
+                super.onAnimationEnd( animation );
+                TextAnimator.addBlur( mStageTextView, 3, BlurMaskFilter.Blur.NORMAL );
+                mStageTextView.setTypedText( mStage.getValue(), new TypedTextView.TypingUpdateListener()
                 {
-                    TextAnimator.shake( mStageTextView, 200 ).addListener( new AnimatorListenerAdapter()
+                    @Override
+                    public void onTypingUpdate( int index )
                     {
-                        @Override
-                        public void onAnimationEnd( Animator animation )
+                        if( index == mStage.getValue().length() )
                         {
-                            super.onAnimationEnd( animation );
-                            TextAnimator.removeBlur( mStageTextView );
-                            TextAnimator.addBlur( mStageTextView, 3, BlurMaskFilter.Blur.NORMAL );
-                            mbTypingAnimationEnded = true;
-                        }
-                    } );
+                            TextAnimator.shake( mStageTextView, 200 ).addListener( new AnimatorListenerAdapter()
+                            {
+                                @Override
+                                public void onAnimationEnd( Animator animation )
+                                {
+                                    super.onAnimationEnd( animation );
+                                    TextAnimator.removeBlur( mStageTextView );
+                                    TextAnimator.addBlur( mStageTextView, 3, BlurMaskFilter.Blur.NORMAL );
+                                    mbTypingAnimationEnded = true;
+                                }
+                            } );
 
-                    if( bHasChoices )
-                    {
-                        TextAnimator.reveal( mLeftChoice, 1000 );
-                        TextAnimator.reveal( mRightChoice, 1000 );
+                            if( bHasChoices )
+                            {
+                                TextAnimator.reveal( mLeftChoice, 1000 );
+
+                                final String choiceText = mStage.getChoices().get( 0 ).getChoice();
+                                mLeftChoice.setTypedText( choiceText, new TypedTextView.TypingUpdateListener()
+                                {
+                                    @Override
+                                    public void onTypingUpdate( int index )
+                                    {
+                                        if( index == choiceText.length() )
+                                        {
+                                            TextAnimator.reveal( mRightChoice, 1000 ).addListener( new AnimatorListenerAdapter()
+                                            {
+                                                @Override
+                                                public void onAnimationEnd( Animator animation )
+                                                {
+                                                    super.onAnimationEnd( animation );
+                                                    mRightChoice.setTypedText( mStage.getChoices().get( 1 ).getChoice(), null );
+                                                }
+                                            } );
+                                        }
+                                    }
+                                } );
+                            }
+                        }
                     }
-                }
+                } );
             }
         } );
-
-        TextAnimator.addBlur( mStageTextView, 4, BlurMaskFilter.Blur.NORMAL );
-        TextAnimator.reveal( mStageTextView, 500 );
     }
 
     @Override

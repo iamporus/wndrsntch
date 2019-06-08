@@ -81,7 +81,7 @@ public class TypedTextView extends AppCompatTextView
             {
                 mHandler.postDelayed( mTypeWriter, mTypingDelayMillis );
 
-                if( mIndex != 0 && mText.charAt( mIndex - 1 ) == '.' )
+                if( mIndex != 0 && ( mText.charAt( mIndex - 1 ) == '.' || mText.charAt( mIndex - 1 ) == ',' ) )
                 {
                     mHandler.removeCallbacks( mTypeWriter );
                     mHandler.postDelayed( mTypeWriter, mSentenceDelayMillis );
