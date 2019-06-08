@@ -3,23 +3,30 @@ package com.rush.wndrsntch.ui.views;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RawRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.google.common.base.Preconditions;
+
+import java.util.Random;
 
 public class TypedTextView extends AppCompatTextView
 {
     public static final String TAG = "TypedTextView";
     private long mSentenceDelayMillis = 1500;
     private long mCursorBlinkDelayMillis = 530;
+    private static final int TYPING_SEED = 100;
     private long mTypingDelayMillis = 175;
     private int mIndex;
     private CharSequence mText;
     private TypingUpdateListener mTypingUpdateListener;
     private boolean mbShowCursor = false;
     private boolean mbSplitSentences = false;
+    private boolean mbEmitSound = false;
+    private AudioPlayer mAudioPlayer;
+    private int mAudioResId;
+    private boolean mbRandomizeTypeDelay;
 
     public interface TypingUpdateListener
     {
@@ -42,13 +49,29 @@ public class TypedTextView extends AppCompatTextView
         @Override
         public void run()
         {
-            Log.d( TAG, "run: " + mText.subSequence( 0, mIndex ) );
+            //extract characters by index
             CharSequence charSequence = mText.subSequence( 0, mIndex );
+
+            //append cursor
             if( mbShowCursor && mIndex < mText.length() )
             {
                 charSequence = charSequence + "|";
             }
+
+            //play typing sound
+            if( mbEmitSound && mbRandomizeTypeDelay )
+            {
+                mAudioPlayer.play();
+                if( mTypingDelayMillis == 0 )
+                {
+                    mTypingDelayMillis = TYPING_SEED;
+                }
+                mTypingDelayMillis = TYPING_SEED + new Random().nextInt( ( int ) ( mTypingDelayMillis ) );
+            }
+
+            //set character by character
             setText( charSequence );
+
             if( mTypingUpdateListener != null )
             {
                 mTypingUpdateListener.onTypingUpdate( mIndex );
@@ -57,10 +80,15 @@ public class TypedTextView extends AppCompatTextView
             if( mIndex < mText.length() )
             {
                 mHandler.postDelayed( mTypeWriter, mTypingDelayMillis );
+
                 if( mIndex != 0 && mText.charAt( mIndex - 1 ) == '.' )
                 {
                     mHandler.removeCallbacks( mTypeWriter );
                     mHandler.postDelayed( mTypeWriter, mSentenceDelayMillis );
+                    if( mbEmitSound )
+                    {
+                        mAudioPlayer.pause();
+                    }
                 }
                 mIndex++;
             }
@@ -70,6 +98,10 @@ public class TypedTextView extends AppCompatTextView
                 if( mbShowCursor )
                 {
                     mHandler.postDelayed( mCursorProxyRunnable, mCursorBlinkDelayMillis );
+                }
+                if( mbEmitSound )
+                {
+                    mAudioPlayer.stop();
                 }
             }
         }
@@ -134,7 +166,17 @@ public class TypedTextView extends AppCompatTextView
             mHandler.removeCallbacks( mCursorProxyRunnable );
         }
         mHandler.postDelayed( mTypeWriter, mTypingDelayMillis );
+        if( mbEmitSound )
+        {
+            mAudioPlayer = new AudioPlayer( getContext(), mAudioResId );
+        }
         mTypingUpdateListener = typingUpdateListener;
+    }
+
+    public void emitSound( boolean bEmitSound, @RawRes int resId )
+    {
+        mbEmitSound = mbRandomizeTypeDelay = bEmitSound;
+        mAudioResId = resId;
     }
 
     private String splitSentences( @NonNull String text )
