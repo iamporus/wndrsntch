@@ -2,14 +2,15 @@ package com.rush.wndrsntch.ui.views;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.RawRes;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import com.google.common.base.Preconditions;
 
 import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RawRes;
+import androidx.appcompat.widget.AppCompatTextView;
 
 public class TypedTextView extends AppCompatTextView
 {

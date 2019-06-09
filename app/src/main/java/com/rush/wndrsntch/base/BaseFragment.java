@@ -1,8 +1,10 @@
 package com.rush.wndrsntch.base;
 
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.fragment.app.Fragment;
 
 public class BaseFragment extends Fragment implements IView
 {

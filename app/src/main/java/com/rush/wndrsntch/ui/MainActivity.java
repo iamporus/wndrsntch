@@ -5,18 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.rush.wndrsntch.R;
 import com.rush.wndrsntch.base.BaseActivity;
 import com.rush.wndrsntch.data.network.APIClient;
 import com.rush.wndrsntch.data.network.model.Stage;
 import com.rush.wndrsntch.ui.stage.StageFragment;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BaseActivity

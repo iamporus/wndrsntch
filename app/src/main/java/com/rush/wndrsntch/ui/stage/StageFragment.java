@@ -4,12 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.BlurMaskFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.rush.wndrsntch.AppConstants;
 import com.rush.wndrsntch.R;
 import com.rush.wndrsntch.TextAnimator;
@@ -21,6 +20,9 @@ import com.rush.wndrsntch.di.PreferenceFactory;
 import com.rush.wndrsntch.ui.MainActivity;
 import com.rush.wndrsntch.ui.views.TypedTextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class StageFragment extends BaseFragment implements IStageView, View.OnClickListener
 {
     private static final String TAG = "StageFragment";
@@ -30,6 +32,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
     private StagePresenter< IStageView > mPresenter;
     private Stage mStage;
     private boolean mbTypingAnimationEnded;
+    private LottieAnimationView mClickHereView;
 
     public static StageFragment newInstance( Stage stage )
     {
@@ -67,6 +70,8 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         mStageTextView.splitSentences( true );
         mStageTextView.showCursor( false );
         mStageTextView.emitSound( true, R.raw.typing );
+
+        mClickHereView = view.findViewById( R.id.animation_view );
 
         mLeftChoice = view.findViewById( R.id.button );
         mRightChoice = view.findViewById( R.id.button2 );
@@ -108,6 +113,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
             TextAnimator.hide( mLeftChoice, 500 );
             TextAnimator.hide( mRightChoice, 500 );
             mStageTextView.setOnClickListener( this );
+
         }
 
         TextAnimator.reveal( mStageTextView, 500 ).addListener( new AnimatorListenerAdapter()
@@ -132,6 +138,10 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
                                     super.onAnimationEnd( animation );
                                     TextAnimator.removeBlur( mStageTextView );
                                     TextAnimator.addBlur( mStageTextView, 3, BlurMaskFilter.Blur.NORMAL );
+                                    if( !bHasChoices )
+                                    {
+                                        TextAnimator.reveal( mClickHereView, 1000, 0.2f );
+                                    }
                                     mbTypingAnimationEnded = true;
                                 }
                             } );
@@ -174,9 +184,11 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         switch( view.getId() )
         {
             case R.id.textView:
+            case R.id.animation_view:
             {
                 if( mbTypingAnimationEnded )
                 {
+                    TextAnimator.hide( mClickHereView, 1000 );
                     TextAnimator.hide( mStageTextView, 1000 ).addListener( new AnimatorListenerAdapter()
                     {
                         @Override
@@ -186,6 +198,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
                             mbTypingAnimationEnded = false;
                         }
                     } );
+
                 }
 
 

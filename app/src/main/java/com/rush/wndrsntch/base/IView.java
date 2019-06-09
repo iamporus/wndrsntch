@@ -1,7 +1,8 @@
 package com.rush.wndrsntch.base;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
+
+import androidx.annotation.StringRes;
 
 public interface IView
 {

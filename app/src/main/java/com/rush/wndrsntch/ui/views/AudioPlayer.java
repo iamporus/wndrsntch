@@ -2,10 +2,11 @@ package com.rush.wndrsntch.ui.views;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.support.annotation.NonNull;
-import android.support.annotation.RawRes;
 
 import com.google.common.base.Preconditions;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RawRes;
 
 public class AudioPlayer implements MediaAdapter
 {

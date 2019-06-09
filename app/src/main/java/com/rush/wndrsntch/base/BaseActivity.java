@@ -2,9 +2,11 @@ package com.rush.wndrsntch.base;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 @SuppressLint( "Registered" )
 public class BaseActivity extends AppCompatActivity implements IView

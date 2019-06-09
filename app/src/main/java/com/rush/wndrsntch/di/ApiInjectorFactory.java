@@ -1,9 +1,10 @@
 package com.rush.wndrsntch.di;
 
-import android.support.annotation.NonNull;
 
 import com.rush.wndrsntch.data.network.APIClient;
 import com.rush.wndrsntch.data.network.IAPIClientHelper;
+
+import androidx.annotation.NonNull;
 
 public class ApiInjectorFactory
 {

@@ -1,8 +1,9 @@
 package com.rush.wndrsntch.data.network;
 
-import android.support.annotation.Nullable;
 
 import com.rush.wndrsntch.data.network.model.Stage;
+
+import androidx.annotation.Nullable;
 
 public interface IAPIClientHelper
 {

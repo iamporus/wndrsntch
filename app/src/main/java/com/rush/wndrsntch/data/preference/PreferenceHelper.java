@@ -2,9 +2,10 @@ package com.rush.wndrsntch.data.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 
 import com.rush.wndrsntch.AppConstants;
+
+import androidx.annotation.NonNull;
 
 public class PreferenceHelper implements IPreferenceHelper
 {

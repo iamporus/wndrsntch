@@ -5,14 +5,18 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.graphics.BlurMaskFilter;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
 
+import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+
 public class TextAnimator
 {
+
     public static void addBlur( @NonNull TextView textView, float radius, BlurMaskFilter.Blur blurType )
     {
         Preconditions.checkNotNull( textView );
@@ -28,10 +32,10 @@ public class TextAnimator
         textView.getPaint().setMaskFilter( null );
     }
 
-    public static ObjectAnimator reveal( @NonNull final TextView textView, int duration )
+    public static ObjectAnimator reveal( @NonNull final View view, int duration )
     {
-        Preconditions.checkNotNull( textView );
-        ObjectAnimator animation = ObjectAnimator.ofFloat( textView, "alpha", 0f, 1f );
+        Preconditions.checkNotNull( view );
+        ObjectAnimator animation = ObjectAnimator.ofFloat( view, "alpha", 0f, 1f );
         animation.setDuration( duration );
         animation.start();
 
@@ -41,17 +45,17 @@ public class TextAnimator
             public void onAnimationEnd( Animator animation )
             {
                 super.onAnimationEnd( animation );
-                textView.setVisibility( View.VISIBLE );
+                view.setVisibility( View.VISIBLE );
             }
         } );
 
         return animation;
     }
 
-    public static ObjectAnimator hide( @NonNull final TextView textView, int duration )
+    public static ObjectAnimator reveal( @NonNull final View view, int duration, float alpha )
     {
-        Preconditions.checkNotNull( textView );
-        ObjectAnimator animation = ObjectAnimator.ofFloat( textView, "alpha", 1f, 0f );
+        Preconditions.checkNotNull( view );
+        ObjectAnimator animation = ObjectAnimator.ofFloat( view, "alpha", 0f, alpha );
         animation.setDuration( duration );
         animation.start();
 
@@ -61,12 +65,55 @@ public class TextAnimator
             public void onAnimationEnd( Animator animation )
             {
                 super.onAnimationEnd( animation );
-                textView.setVisibility( View.INVISIBLE );
+                view.setVisibility( View.VISIBLE );
             }
         } );
 
         return animation;
     }
+
+    class Builder
+    {
+        ArrayList< ObjectAnimator > mAnimators;
+
+        Builder( ObjectAnimator objectAnimator )
+        {
+            mAnimators = new ArrayList<>();
+            mAnimators.add( objectAnimator );
+        }
+
+        Builder append(ObjectAnimator objectAnimator)
+        {
+            mAnimators.add( objectAnimator );
+            return this;
+        }
+
+        void start()
+        {
+
+        }
+    }
+
+    public static ObjectAnimator hide( @NonNull final View view, int duration )
+    {
+        Preconditions.checkNotNull( view );
+        ObjectAnimator animation = ObjectAnimator.ofFloat( view, "alpha", 1f, 0f );
+        animation.setDuration( duration );
+        animation.start();
+
+        animation.addListener( new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd( Animator animation )
+            {
+                super.onAnimationEnd( animation );
+                view.setVisibility( View.INVISIBLE );
+            }
+        } );
+
+        return animation;
+    }
+
 
     public static ObjectAnimator shake( @NonNull TextView textView, int duration )
     {

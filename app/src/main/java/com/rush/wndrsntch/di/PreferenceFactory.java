@@ -1,10 +1,11 @@
 package com.rush.wndrsntch.di;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.rush.wndrsntch.data.preference.IPreferenceHelper;
 import com.rush.wndrsntch.data.preference.PreferenceHelper;
+
+import androidx.annotation.NonNull;
 
 public class PreferenceFactory
 {

@@ -1,6 +1,5 @@
 package com.rush.wndrsntch.data.network;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -8,6 +7,8 @@ import com.rush.wndrsntch.data.network.model.Stage;
 import com.rush.wndrsntch.data.network.model.Stages;
 
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
 
 public class APIClient implements IAPIClientHelper
 {
@@ -33,12 +34,12 @@ public class APIClient implements IAPIClientHelper
             "        {\n" +
             "          \"choiceId\": 0,\n" +
             "          \"stageId\": 3,\n" +
-            "          \"choice\": \"Less travelled.\"\n" +
+            "          \"choice\": \"Less travelled\"\n" +
             "        },\n" +
             "        {\n" +
             "          \"choiceId\": 1,\n" +
             "          \"stageId\": 6,\n" +
-            "          \"choice\": \"More travelled.\"\n" +
+            "          \"choice\": \"More travelled\"\n" +
             "        }\n" +
             "      ]\n" +
             "    },\n" +

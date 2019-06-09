@@ -1,7 +1,6 @@
 package com.rush.wndrsntch.ui.stage;
 
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.rush.wndrsntch.base.BasePresenter;
@@ -11,6 +10,8 @@ import com.rush.wndrsntch.data.network.model.Choice;
 import com.rush.wndrsntch.data.network.model.Stage;
 import com.rush.wndrsntch.data.preference.IPreferenceHelper;
 import com.rush.wndrsntch.ui.MainActivity;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class StagePresenter< V extends IStageView > extends BasePresenter< V > implements
                                                                                IStagePresenter< V >
