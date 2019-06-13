@@ -4,9 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@android:color/black"
+    android:padding="14dp">
 
-    <com.rush.wndrsntch.ui.views.TypedTextView
+    <com.prush.typedtextview.TypedTextView
         android:id="@+id/textView"
         fontPath="fonts/ToxTypewriter.ttf"
         android:layout_width="match_parent"
@@ -17,7 +18,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:gravity="center"
+        android:gravity="start"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,13 +36,13 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerCrop"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        android:visibility="invisible"
         app:lottie_rawRes="@raw/search"/>
 
     <LinearLayout
@@ -58,24 +59,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.rush.wndrsntch.ui.views.TypedTextView
+        <TextView
             android:id="@+id/button"
             fontPath="fonts/ToxTypewriter.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
             android:textColor="@color/colorAccent"
             android:textSize="22sp"
             android:visibility="invisible"/>
 
-        <com.rush.wndrsntch.ui.views.TypedTextView
+        <TextView
             android:id="@+id/button2"
             fontPath="fonts/ToxTypewriter.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left"
             android:textColor="@color/colorAccent"
             android:textSize="22sp"
             android:visibility="invisible"/>

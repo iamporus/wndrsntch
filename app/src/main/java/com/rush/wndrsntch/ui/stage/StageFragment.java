@@ -4,11 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.BlurMaskFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.prush.typedtextview.TypedTextView;
 import com.rush.wndrsntch.AppConstants;
 import com.rush.wndrsntch.R;
 import com.rush.wndrsntch.TextAnimator;
@@ -18,7 +21,6 @@ import com.rush.wndrsntch.data.network.model.Stage;
 import com.rush.wndrsntch.di.ApiInjectorFactory;
 import com.rush.wndrsntch.di.PreferenceFactory;
 import com.rush.wndrsntch.ui.MainActivity;
-import com.rush.wndrsntch.ui.views.TypedTextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,8 +29,8 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
 {
     private static final String TAG = "StageFragment";
     private TypedTextView mStageTextView;
-    private TypedTextView mLeftChoice;
-    private TypedTextView mRightChoice;
+    private TextView mLeftChoice;
+    private TextView mRightChoice;
     private StagePresenter< IStageView > mPresenter;
     private Stage mStage;
     private boolean mbTypingAnimationEnded;
@@ -67,16 +69,11 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         View view = inflater.inflate( R.layout.fragment_stage, container, false );
 
         mStageTextView = view.findViewById( R.id.textView );
-        mStageTextView.splitSentences( true );
-        mStageTextView.showCursor( false );
-        mStageTextView.emitSound( true, R.raw.typing );
 
         mClickHereView = view.findViewById( R.id.animation_view );
 
         mLeftChoice = view.findViewById( R.id.button );
         mRightChoice = view.findViewById( R.id.button2 );
-        mRightChoice.emitSound( true, R.raw.typing );
-        mLeftChoice.emitSound( true, R.raw.typing );
         return view;
     }
 
@@ -123,12 +120,14 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
             {
                 super.onAnimationEnd( animation );
                 TextAnimator.addBlur( mStageTextView, 3, BlurMaskFilter.Blur.NORMAL );
-                mStageTextView.setTypedText( mStage.getValue(), new TypedTextView.TypingUpdateListener()
+                mStageTextView.setTypedText( mStage.getValue() );
+                mStageTextView.setOnCharacterTypedListener( new TypedTextView.OnCharacterTypedListener()
                 {
                     @Override
-                    public void onTypingUpdate( int index )
+                    public void onCharacterTyped( char character, int index )
                     {
-                        if( index == mStage.getValue().length() )
+                        Log.d( TAG, "onCharacterTyped: " + index  + " - "  + character + " length - " + mStage.getValue().length() );
+                        if( index == mStage.getValue().length() - 1 )
                         {
                             TextAnimator.shake( mStageTextView, 200 ).addListener( new AnimatorListenerAdapter()
                             {
@@ -149,31 +148,17 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
                             if( bHasChoices )
                             {
                                 TextAnimator.reveal( mLeftChoice, 1000 );
+                                TextAnimator.reveal( mRightChoice, 1000 );
 
                                 final String choiceText = mStage.getChoices().get( 0 ).getChoice();
-                                mLeftChoice.setTypedText( choiceText, new TypedTextView.TypingUpdateListener()
-                                {
-                                    @Override
-                                    public void onTypingUpdate( int index )
-                                    {
-                                        if( index == choiceText.length() )
-                                        {
-                                            TextAnimator.reveal( mRightChoice, 1000 ).addListener( new AnimatorListenerAdapter()
-                                            {
-                                                @Override
-                                                public void onAnimationEnd( Animator animation )
-                                                {
-                                                    super.onAnimationEnd( animation );
-                                                    mRightChoice.setTypedText( mStage.getChoices().get( 1 ).getChoice(), null );
-                                                }
-                                            } );
-                                        }
-                                    }
-                                } );
+                                mLeftChoice.setText( choiceText );
+                                mRightChoice.setText( mStage.getChoices().get( 1 ).getChoice(), null );
+
                             }
                         }
                     }
                 } );
+
             }
         } );
     }
