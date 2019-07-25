@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity
 
         if( savedInstanceState == null )
         {
-            Stage currentStage = apiClient.getStageById( 0 );
+            Stage currentStage = apiClient.getStageById( 3 );
             StageFragment stageFragment = StageFragment.newInstance( currentStage );
             setFragment( stageFragment, STAGE_FRAGMENT, false );
         }

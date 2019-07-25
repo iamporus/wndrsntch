@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.prush.bndrsntchoicelayout.BndrsntChoiceLayout;
 import com.prush.typedtextview.TypedTextView;
 import com.rush.wndrsntch.AppConstants;
 import com.rush.wndrsntch.R;
@@ -29,12 +29,11 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
 {
     private static final String TAG = "StageFragment";
     private TypedTextView mStageTextView;
-    private TextView mLeftChoice;
-    private TextView mRightChoice;
     private StagePresenter< IStageView > mPresenter;
     private Stage mStage;
     private boolean mbTypingAnimationEnded;
     private LottieAnimationView mClickHereView;
+    private BndrsntChoiceLayout mChoiceLayout;
 
     public static StageFragment newInstance( Stage stage )
     {
@@ -72,8 +71,40 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
 
         mClickHereView = view.findViewById( R.id.animation_view );
 
-        mLeftChoice = view.findViewById( R.id.button );
-        mRightChoice = view.findViewById( R.id.button2 );
+        mChoiceLayout = view.findViewById( R.id.bndrSntchoiceLayout );
+        mChoiceLayout.setNumberOfChoices( 2 );
+        mChoiceLayout.setBRandomizeChoice( true );
+
+        getLifecycle().addObserver( mChoiceLayout.getLifeCycleObserver() );
+
+        mChoiceLayout.setOnChoiceSelectedListener( new BndrsntChoiceLayout.OnChoiceSelectedListener()
+        {
+            @Override
+            public void onChoiceSelected( final int i, final String s )
+            {
+                mChoiceLayout.reset();
+
+                TextAnimator.hide( mStageTextView, 1000 ).addListener( new AnimatorListenerAdapter()
+                {
+                    @Override
+                    public void onAnimationEnd( Animator animation )
+                    {
+                        super.onAnimationEnd( animation );
+
+                        switch( i )
+                        {
+                            case R.id.choiceOneTextView:
+                                mPresenter.onChoiceSelected( ( Choice ) mChoiceLayout.getChoiceOneTag() );
+                                break;
+                            case R.id.choiceTwoTextView:
+                                mPresenter.onChoiceSelected( ( Choice ) mChoiceLayout.getChoiceTwoTag() );
+                                break;
+                        }
+
+                    }
+                } );
+            }
+        } );
         return view;
     }
 
@@ -95,11 +126,8 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         {
             //setup choices
 
-            mLeftChoice.setTag( mStage.getChoices().get( 0 ) );
-            mRightChoice.setTag( mStage.getChoices().get( 1 ) );
-
-            mLeftChoice.setOnClickListener( this );
-            mRightChoice.setOnClickListener( this );
+            mChoiceLayout.setChoiceOneTag( mStage.getChoices().get( 0 ) );
+            mChoiceLayout.setChoiceTwoTag( mStage.getChoices().get( 1 ) );
 
             bHasChoices = true;
             mStageTextView.setOnClickListener( null );
@@ -107,8 +135,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         else
         {
             bHasChoices = false;
-            TextAnimator.hide( mLeftChoice, 500 );
-            TextAnimator.hide( mRightChoice, 500 );
+            TextAnimator.hide( mChoiceLayout, 500 );
             mStageTextView.setOnClickListener( this );
 
         }
@@ -126,7 +153,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
                     @Override
                     public void onCharacterTyped( char character, int index )
                     {
-                        Log.d( TAG, "onCharacterTyped: " + index  + " - "  + character + " length - " + mStage.getValue().length() );
+                        Log.d( TAG, "onCharacterTyped: " + index + " - " + character + " length - " + mStage.getValue().length() );
                         if( index == mStage.getValue().length() - 1 )
                         {
                             TextAnimator.shake( mStageTextView, 200 ).addListener( new AnimatorListenerAdapter()
@@ -147,12 +174,18 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
 
                             if( bHasChoices )
                             {
-                                TextAnimator.reveal( mLeftChoice, 1000 );
-                                TextAnimator.reveal( mRightChoice, 1000 );
+                                TextAnimator.reveal( mChoiceLayout, 1000 );
+                                mChoiceLayout.startTimer( 10000, new BndrsntChoiceLayout.OnTimerElapsedListener()
+                                {
+                                    @Override
+                                    public void onTimerElapsed()
+                                    {
 
-                                final String choiceText = mStage.getChoices().get( 0 ).getChoice();
-                                mLeftChoice.setText( choiceText );
-                                mRightChoice.setText( mStage.getChoices().get( 1 ).getChoice(), null );
+                                    }
+                                } );
+
+                                mChoiceLayout.setChoiceOneText( mStage.getChoices().get( 0 ).getChoice() );
+                                mChoiceLayout.setChoiceTwoText( mStage.getChoices().get( 1 ).getChoice() );
 
                             }
                         }
@@ -185,22 +218,6 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
                     } );
 
                 }
-
-
-                break;
-            }
-            case R.id.button:
-            case R.id.button2:
-            {
-                TextAnimator.hide( mStageTextView, 1000 ).addListener( new AnimatorListenerAdapter()
-                {
-                    @Override
-                    public void onAnimationEnd( Animator animation )
-                    {
-                        super.onAnimationEnd( animation );
-                        mPresenter.onChoiceSelected( ( Choice ) view.getTag() );
-                    }
-                } );
                 break;
             }
         }
