@@ -68,11 +68,19 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         View view = inflater.inflate( R.layout.fragment_stage, container, false );
 
         mStageTextView = view.findViewById( R.id.textView );
+        TypedTextView.Builder builder = new TypedTextView.Builder( mStageTextView );
+        builder.showCursor( true )
+                .setTypingSpeed( 50 )
+                .setSentencePause( 500 )
+                .randomizeTypingSpeed( true );
+        mStageTextView = builder.build();
 
+        mStageTextView.showCursor( true );
         mClickHereView = view.findViewById( R.id.animation_view );
 
         mChoiceLayout = view.findViewById( R.id.bndrSntchoiceLayout );
         mChoiceLayout.setNumberOfChoices( 2 );
+        mChoiceLayout.setBRevealMode( true );
         mChoiceLayout.setBRandomizeChoice( true );
 
         getLifecycle().addObserver( mChoiceLayout.getLifeCycleObserver() );
@@ -83,7 +91,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
             public void onChoiceSelected( final int i, final String s )
             {
                 mChoiceLayout.reset();
-
+                TextAnimator.hide( mChoiceLayout, 1000 );
                 TextAnimator.hide( mStageTextView, 1000 ).addListener( new AnimatorListenerAdapter()
                 {
                     @Override
