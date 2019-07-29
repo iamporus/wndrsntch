@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity
         mFragmentManager = getSupportFragmentManager();
 
         //TODO: inject APIClient
-        APIClient apiClient = new APIClient();
+        APIClient apiClient = APIClient.getInstance(getResources());
 
         if( savedInstanceState == null )
         {

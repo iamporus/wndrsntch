@@ -51,7 +51,7 @@ public class StageFragment extends BaseFragment implements IStageView, View.OnCl
         super.onCreate( savedInstanceState );
 
         //TODO: Is this correct? Can Factory pattern complement DI?
-        mPresenter = new StagePresenter<>( ApiInjectorFactory.getInstance(),
+        mPresenter = new StagePresenter<>( ApiInjectorFactory.getInstance(getResources()),
                                            PreferenceFactory.getInstance( getContext(),
                                                                           AppConstants.PREFS_FILE ) );
         if( getArguments() != null )

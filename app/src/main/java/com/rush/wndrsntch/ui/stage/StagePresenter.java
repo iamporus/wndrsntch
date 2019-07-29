@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.rush.wndrsntch.base.BasePresenter;
-import com.rush.wndrsntch.data.network.APIClient;
 import com.rush.wndrsntch.data.network.IAPIClientHelper;
 import com.rush.wndrsntch.data.network.model.Choice;
 import com.rush.wndrsntch.data.network.model.Stage;
@@ -35,7 +34,7 @@ public class StagePresenter< V extends IStageView > extends BasePresenter< V > i
     public void gotoStage( int stageId )
     {
         Log.d( TAG, "gotoStage() called with: stageId = [" + stageId + "]" );
-        Stage stage = new APIClient().getStageById( stageId );
+        Stage stage = getIApiClientHelper().getStageById( stageId );
         if( stage != null )
         {
             Intent intent = new Intent();

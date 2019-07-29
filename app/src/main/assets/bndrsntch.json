@@ -1,0 +1,63 @@
+{
+  "stages": [{
+    "id": 0,
+    "value": "This game is a choose your own adventure story.\nSo, the story will have multiple endings.\nAs you progress, you'll find choices at certain stages.\nEvery choice will lead you to a different ending.\n\nSo...\nAre you ready to play the game?",
+    "choices": [{
+      "choiceId": 0,
+      "stageId": 5,
+      "choice": "Yeah."
+    },
+      {
+        "choiceId": 1,
+        "stageId": 5,
+        "choice": "Hell yeah."
+      }
+    ]
+  },
+    {
+      "id": 5,
+      "value": "You are in a jungle.\nThere are two roads in front of you.\nWhich one would you choose?",
+      "choices": [{
+        "choiceId": 0,
+        "stageId": 8,
+        "choice": "Less travelled"
+      },
+        {
+          "choiceId": 1,
+          "stageId": 11,
+          "choice": "More travelled"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "value": "Look around. See there's a rare footprint on the ground.\nHere comes a tiger from the bush. He attacks on you. And you die.\nThe End.",
+      "choices": [{
+        "choiceId": 0,
+        "stageId": 5,
+        "choice": "Play again."
+      },
+        {
+          "choiceId": 1,
+          "stageId": 0,
+          "choice": "Go to Next Level."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "value": "You seem like a reserved person to me. Anyway. Keep walking.\nThere is a nicely made pavement in front of you.\nYou keep walking. You saw the exit and you walk out of the jungle. You live to live another day.\nThe End.",
+      "choices": [{
+        "choiceId": 0,
+        "stageId": 5,
+        "choice": "Play again."
+      },
+        {
+          "choiceId": 1,
+          "stageId": 0,
+          "choice": "Go to Next Level."
+        }
+      ]
+    }
+  ]
+}
